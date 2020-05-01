@@ -1,5 +1,7 @@
 # Vonage module for Appcelerator Titanium
 
+<img src="images/vonage.jpg"/>
+
 ## Requirements
 
 * Titanium SDK 9+
