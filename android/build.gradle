@@ -1,0 +1,11 @@
+
+repositories {
+	google()
+	jcenter()
+	maven { url 'https://tokbox.bintray.com/maven' }
+}
+
+dependencies {
+	implementation 'com.opentok.android:opentok-android-sdk:2.16.6'
+	implementation 'pub.devrel:easypermissions:3.0.0'
+}

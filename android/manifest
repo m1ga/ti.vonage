@@ -1,0 +1,18 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 1.0.0
+apiversion: 4
+architectures: arm64-v8a armeabi-v7a x86
+description: Vonage (formerly OpenTok) Titanium module
+author: Michael Gangolf
+license: Specify your license
+copyright: Copyright (c) 2020 by Michael Gangolf
+
+# these should not be edited
+name: ti.vonage
+moduleid: ti.vonage
+guid: 6fa5bf8b-7ee1-4f72-bf06-03b8e4d34e1d
+platform: android
+minsdk: 9.0.1.GA
