@@ -106,11 +106,11 @@ build.gradle
 repositories {
 	google()
 	jcenter()
-	maven { url 'https://tokbox.bintray.com/maven' }
+	mavenCentral()
 }
 
 dependencies {
-	implementation 'com.opentok.android:opentok-android-sdk:2.16.6'
+	implementation 'com.opentok.android:opentok-android-sdk:2.20.1'
 	implementation 'pub.devrel:easypermissions:3.0.0'
 }
 ```
