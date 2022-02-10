@@ -110,7 +110,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'com.opentok.android:opentok-android-sdk:2.20.1'
+	implementation 'com.opentok.android:opentok-android-sdk:2.21.5'
 	implementation 'pub.devrel:easypermissions:3.0.0'
 }
 ```
