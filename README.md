@@ -18,7 +18,7 @@
 * apiKey
 * sessionId
 * token
-* videoOnly
+* audioOnly (creation only)
 
 ### Methods
 * connect
