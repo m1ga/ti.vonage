@@ -18,6 +18,7 @@
 * apiKey
 * sessionId
 * token
+* videoOnly
 
 ### Methods
 * connect

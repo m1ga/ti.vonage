@@ -53,6 +53,7 @@ public class VonageViewProxy extends TiViewProxy implements Session.SessionListe
 	private FrameLayout mSubscriberViewContainer;
 	private Publisher mPublisher;
 	private Subscriber mSubscriber;
+	private boolean videoOnly = false;
 
 	private class VonageView extends TiUIView
 	{
@@ -93,6 +94,9 @@ public class VonageViewProxy extends TiViewProxy implements Session.SessionListe
 			}
 			if (d.containsKey("token")) {
 				TOKEN = (d.getString("token"));
+			}
+			if (d.containsKey("videoOnly")) {
+				videoOnly = (d.getBoolean("videoOnly"));
 			}
 		}
 
@@ -177,7 +181,11 @@ public class VonageViewProxy extends TiViewProxy implements Session.SessionListe
 	public void onConnected(Session session)
 	{
 		Log.d(LCAT, "Session Connected");
-		mPublisher = new Publisher.Builder(TiApplication.getAppCurrentActivity()).build();
+		Publisher.Builder pb = new Publisher.Builder(TiApplication.getAppCurrentActivity());
+		if (videoOnly) {
+			pb.videoTrack(false);
+		}
+		mPublisher = pb.build();
 		mPublisher.setPublisherListener(this);
 
 		mPublisherViewContainer.addView(mPublisher.getView());
