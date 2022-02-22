@@ -42,63 +42,38 @@
 </modules>
 ```
 
-index.xml
-```xml
-<Alloy>
-	<Window onOpen="onOpen">
-		<VonageView module="ti.vonage" id="vonage"/>
-		<TextField hintText="api key" id="tf_api" value=""/>
-		<TextField hintText="session id" id="tf_session" value=""/>
-		<TextField hintText="token" id="tf_token" value=""/>
-		<Button id="btn" title="connect" onClick="onClickConnect"/>
-        <Button id="btn" title="disconnect" onClick="onClickDisconnect"/>
-	</Window>
-</Alloy>
-
-```
-
-index.js
 ```javascript
-$.index.open();
+var vonage = require("ti.vonage");
 
 function onOpen(e) {
-	$.vonage.initialize();
+	vonage.initialize();
 }
 
-$.vonage.addEventListener("ready", function() {
+vonage.addEventListener("ready", function() {
 	console.log("ready");
 })
 
-function onClickConnect(e) {
-	$.vonage.apiKey = $.tf_api.value;
-	$.vonage.sessionId = $.tf_session.value;
-	$.vonage.token = $.tf_token.value;
+vonage.addEventListener("streamReceived", function(e) {
+  // view with the camera stream:
+	var v = Ti.UI.createView({height:190,	width: 190})
+	v.add(e.view);
 
-	$.vonage.connect();
+	console.log(e.type, e.streamId);
+})
+vonage.addEventListener("streamDropped", function(e) {
+	console.log(e.type, e.streamId);
+})
+
+function onClickConnect(e) {
+	vonage.apiKey = $.tf_api.value;
+	vonage.sessionId = $.tf_session.value;
+	vonage.token = $.tf_token.value;
+
+	vonage.connect();
 }
 
 function onClickDisconnect(e) {
-	$.vonage.disconnect();
-}
-```
-
-index.tss
-```
-".container" : {
-	backgroundColor: "white"
-}
-"TextField" : {
-	borderWidth: 1,
-	borderColor: "#000",
-	left: 10,
-	right: 10,
-	backgroundColor: "transparent",
-	color: "#000"
-}
-"#vonage" : {
-	height: 400,
-	width: Ti.UI.FILL,
-	top: 0
+	vonage.disconnect();
 }
 ```
 
@@ -108,10 +83,5 @@ repositories {
 	google()
 	jcenter()
 	mavenCentral()
-}
-
-dependencies {
-	implementation 'com.opentok.android:opentok-android-sdk:2.21.5'
-	implementation 'pub.devrel:easypermissions:3.0.0'
 }
 ```
