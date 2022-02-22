@@ -34,6 +34,10 @@
 * streamDestroyed
 * error
 
+## How to use it
+
+Listen to the `streamReceived` event. It will return a `view` with the videos. You'll add those views to your normal Ti app. The `type` and `streamId` will help you to e.g. remove them later again if a participant will disconnect.
+
 ## Example
 
 ```xml
