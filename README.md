@@ -27,7 +27,7 @@
 ### Events
 * ready
 * disconnected
-* streamReceived
+* streamReceived: view, userType, streamId, connectionData, connectionId, connectionCreationTime
 * streamDropped
 * sessionError
 * streamCreated
@@ -36,7 +36,7 @@
 
 ## How to use it
 
-Listen to the `streamReceived` event. It will return a `view` with the videos. You'll add those views to your normal Ti app. The `type` and `streamId` will help you to e.g. remove them later again if a participant will disconnect.
+Listen to the `streamReceived` event. It will return a `view` with the videos. You'll add those views to your normal Ti app. The `userType` and `streamId` will help you to e.g. remove them later again if a participant will disconnect.
 
 ## Example
 
@@ -58,14 +58,23 @@ vonage.addEventListener("ready", function() {
 })
 
 vonage.addEventListener("streamReceived", function(e) {
-  // view with the camera stream:
-	var v = Ti.UI.createView({height:190,	width: 190})
+	// view with the camera stream:
+	var v = Ti.UI.createView({
+		height: 190,
+		width: 190
+	})
 	v.add(e.view);
 
-	console.log(e.type, e.streamId);
+	console.log("Type:", e.userType);
+	if (e.userType == "subscriber") {
+		console.log("Stream id:", e.streamId);
+		console.log("Connection data:", e.connectionData);
+		console.log("Connection id:", e.connectionId);
+		console.log("Connection time:", e.connectionCreationTime);
+	}
 })
 vonage.addEventListener("streamDropped", function(e) {
-	console.log(e.type, e.streamId);
+	console.log(e.userType, e.streamId);
 })
 
 function onClickConnect(e) {
@@ -74,11 +83,13 @@ function onClickConnect(e) {
 	vonage.token = $.tf_token.value;
 
 	vonage.connect();
+
 }
 
 function onClickDisconnect(e) {
 	vonage.disconnect();
 }
+
 ```
 
 build.gradle
