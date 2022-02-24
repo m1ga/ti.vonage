@@ -35,7 +35,7 @@ import org.appcelerator.titanium.view.TiUIView;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-@Kroll.module(name = "TiOpentok", id = "ti.vonage", propertyAccessors = {"apiKey", "token", "sessionId"})
+@Kroll.module(name = "TiVonage", id = "ti.vonage", propertyAccessors = {"apiKey", "token", "sessionId"})
 public class TiVonageModule extends KrollModule implements Session.SessionListener, PublisherKit.PublisherListener {
 
     // Standard Debugging variables
@@ -145,7 +145,7 @@ public class TiVonageModule extends KrollModule implements Session.SessionListen
         vp.createView(TiApplication.getAppCurrentActivity());
 
         kd.put("view", vp);
-        kd.put("type", "published");
+        kd.put("userType", "published");
         fireEvent("streamReceived", kd);
         mSession.publish(mPublisher);
     }
@@ -167,8 +167,12 @@ public class TiVonageModule extends KrollModule implements Session.SessionListen
         vp.createView(TiApplication.getAppCurrentActivity());
 
         kd.put("view", vp);
-        kd.put("type", "subscriber");
+        kd.put("userType", "subscriber");
         kd.put("streamId", stream.getStreamId());
+        kd.put("connectionData", stream.getConnection().getData());
+        kd.put("connectionId", stream.getConnection().getConnectionId());
+        kd.put("connectionCreationTime", stream.getConnection().getCreationTime());
+
         fireEvent("streamReceived", kd);
     }
 
