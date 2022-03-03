@@ -35,7 +35,7 @@ import org.appcelerator.titanium.view.TiUIView;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-@Kroll.module(name = "TiVonage", id = "ti.vonage", propertyAccessors = {"apiKey", "token", "sessionId"})
+@Kroll.module(name = "TiVonage", id = "ti.vonage", propertyAccessors = {"apiKey", "token", "sessionId", "audioOnly"})
 public class TiVonageModule extends KrollModule implements Session.SessionListener, PublisherKit.PublisherListener {
 
     // Standard Debugging variables
