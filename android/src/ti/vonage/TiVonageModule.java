@@ -52,6 +52,7 @@ public class TiVonageModule extends KrollModule implements Session.SessionListen
     private Publisher mPublisher;
     private Subscriber mSubscriber;
     private boolean audioOnly = false;
+    private String permissionsText = "This app needs access to your camera and mic to make video calls";
 
     public TiVonageModule() {
         super();
@@ -99,8 +100,7 @@ public class TiVonageModule extends KrollModule implements Session.SessionListen
             // initialize view objects from your layout
             fireEvent("ready", new KrollDict());
         } else {
-            EasyPermissions.requestPermissions(
-                    activity, "This app needs access to your camera and mic to make video calls", RC_VIDEO_APP_PERM, perms);
+            EasyPermissions.requestPermissions(activity, permissionsText, RC_VIDEO_APP_PERM, perms);
         }
     }
 
@@ -110,7 +110,10 @@ public class TiVonageModule extends KrollModule implements Session.SessionListen
 
     // Methods
     @Kroll.method
-    public void initialize() {
+    public void initialize(KrollDict data) {
+        if (data.containsKeyAndNotNull("permissionsText")) {
+            permissionsText = data.getString("permissionsText");
+        }
         requestPermissions();
     }
 
