@@ -1,0 +1,1 @@
+OTHER_LDFLAGS=$(inherited) -lxml2 -lc++ -lz -framework MapKit -framework QuartzCore -framework EventKit -framework GLKit -framework CoreTelephony -framework SystemConfiguration -framework OpenGLES -framework CoreVideo -framework CoreMedia -framework CoreGraphics -framework AVFoundation -framework CoreData -framework AudioToolbox -framework VideoToolbox

@@ -40,3 +40,4 @@ android/.project
 android/platform/README.md
 /ios/dist
 /android/.gradle
+/ios/platform/VonageWebRTC.framework
