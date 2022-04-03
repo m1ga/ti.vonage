@@ -1,0 +1,19 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 1.0.0
+apiversion: 2
+architectures: arm64 x86_64
+mac: false
+description: ti.vonage
+author: Hans Knöchel
+license: Apache 2.0
+copyright: Copyright (c) 2022 by Hans Knöchel
+
+# these should not be edited
+name: ti.vonage
+moduleid: ti.vonage
+guid: 8669e6e4-ff3a-4a19-b85a-ead686c4c18c
+platform: iphone
+minsdk: 9.2.0

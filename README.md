@@ -9,8 +9,24 @@
 
 ## Requirements
 
-* Titanium SDK 9+
+* Titanium SDK 9+ (Android), 9.2.0+ (iOS)
 * Vonage <small>(formerly OpenTok)</small> account
+* For Android: Add the following like to your [app]/platform/android/build.gradle
+```gradle
+repositories {
+  google()
+  jcenter()
+  mavenCentral()
+}
+```
+
+* For iOS: Add the following privacy keys to the <plist> section of your tiapp.xml:
+```xml
+<key>NSCameraUsageDescription</key>
+<string>We need to access your camera (use your own description)</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>We need to access your microphone (use your own description)</string>
+```
 
 ## API
 
@@ -18,7 +34,7 @@
 * apiKey
 * sessionId
 * token
-* audioOnly (creation only)
+* audioOnly (creation only, Android only for now)
 
 ### Methods
 * connect
@@ -28,7 +44,7 @@
 * ready
 * disconnected
 * streamReceived: view, userType, streamId, connectionData, connectionId, connectionCreationTime
-* streamDropped
+* streamDropped (Android only for now)
 * sessionError
 * streamCreated
 * streamDestroyed
@@ -42,61 +58,93 @@ Listen to the `streamReceived` event. It will return a `view` with the videos. Y
 
 ```xml
 <modules>
-    <module platform="android">ti.vonage</module>
+    <module>ti.vonage</module>
 </modules>
 ```
 
 ```javascript
-var vonage = require("ti.vonage");
+import TiVonage from 'ti.vonage';
 
-function onOpen(e) {
-	vonage.initialize();
+const API_KEY = ''; // Get from https://tokbox.com/developer/
+const SESSION_ID = '; // Get from https://tokbox.com/developer/tools/playground/
+const TOKEN = ''; // Get from https://tokbox.com/developer/tools/playground/
+
+function onOpen() {
+  if (OS_ANDROID) {
+    TiVonage.initialize();
+    return;
+  }
+
+  // iOS requires some privacy permissions first
+  Ti.Media.requestCameraPermissions(event => {
+    if (!event.success) {
+      alert('No access to camera!');
+    }
+
+    Ti.Media.requestAudioRecorderPermissions(event => {
+      if (!event.success) {
+        alert('No access to microphone!');
+      }
+  
+      TiVonage.initialize();
+    });
+  });
 }
 
-vonage.addEventListener("ready", function() {
-	console.log("ready");
-})
+TiVonage.addEventListener('ready', () => {
+  console.log('ready');
+});
 
-vonage.addEventListener("streamReceived", function(e) {
-	// view with the camera stream:
-	var v = Ti.UI.createView({
-		height: 190,
-		width: 190
-	})
-	v.add(e.view);
+TiVonage.addEventListener('streamReceived', event => {
+  // view with the camera stream:
+  const view = Ti.UI.createView({
+    height: 190,
+    width: 190
+  });
 
-	console.log("Type:", e.userType);
-	if (e.userType == "subscriber") {
-		console.log("Stream id:", e.streamId);
-		console.log("Connection data:", e.connectionData);
-		console.log("Connection id:", e.connectionId);
-		console.log("Connection time:", e.connectionCreationTime);
-	}
-})
-vonage.addEventListener("streamDropped", function(e) {
-	console.log(e.userType, e.streamId);
-})
+  view.add(event.view);
+  window.add(view);
 
-function onClickConnect(e) {
-	vonage.apiKey = $.tf_api.value;
-	vonage.sessionId = $.tf_session.value;
-	vonage.token = $.tf_token.value;
+  console.log('Type:', event.userType);
+  if (event.userType == 'subscriber') {
+    console.log('Stream id:', event.streamId);
+    console.log('Connection data:', event.connectionData);
+    console.log('Connection id:', event.connectionId);
+    console.log('Connection time:', event.connectionCreationTime);
+  }
+});
 
-	vonage.connect();
+TiVonage.addEventListener('streamDropped', event => {
+  console.log(event.userType, event.streamId);
+});
 
+function onClickConnect() {
+  TiVonage.apiKey = API_KEY;
+  TiVonage.sessionId = SESSION_ID;
+  TiVonage.token = TOKEN;
+
+  TiVonage.connect();
 }
 
-function onClickDisconnect(e) {
-	vonage.disconnect();
+function onClickDisconnect() {
+  TiVonage.disconnect();
 }
+
+const window = Ti.UI.createWindow();
+const btn = Ti.UI.createButton({ title: 'Connect' });
+
+window.addEventListener('open', onOpen);
+btn.addEventListener('click', onClickConnect);
+
+window.add(btn);
+window.open();
 
 ```
 
-build.gradle
-```
-repositories {
-	google()
-	jcenter()
-	mavenCentral()
-}
-```
+## License
+
+Apache 2.0
+
+## Author
+
+Michael Gangolf ([@m1ga](https://github.com/m1ga))
