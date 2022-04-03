@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5fcfc36a674d9026d79857199151af2d8a115997fe313b7a71b25b4deb3eb5a7
-size 95
+framework module OpenTok {
+  umbrella header "OpenTok.h"
+
+  export *
+  module * { export * }
+}

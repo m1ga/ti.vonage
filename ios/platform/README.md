@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4c86154c990382a06be8f4339daee9ed27ba9dbfb4ddb40a4eb18490579f2109
-size 302
+To build this module, olease download the "VonageWebRTC.framework" from https://s3.amazonaws.com/artifact.tokbox.com/rel/ios-sdk/OpenTok-iOS-2.22.1.tar.bz2 and move it to this directory.
