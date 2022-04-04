@@ -95,7 +95,11 @@ class TiVonageModule: TiModule {
 extension TiVonageModule : OTSessionDelegate {
 
   func session(_ session: OTSession, didFailWithError error: OTError) {
-    fireEvent("sessionError")
+    if error.code == 1022 {
+      fireEvent("streamDropped")
+    } else {
+      fireEvent("sessionError")
+    }
   }
   
   func sessionDidConnect(_ session: OTSession) {
@@ -183,7 +187,11 @@ extension TiVonageModule : OTSessionDelegate {
 extension TiVonageModule : OTPublisherDelegate {
 
   func publisher(_ publisher: OTPublisherKit, didFailWithError error: OTError) {
-    fireEvent("error", with: ["message": error.localizedDescription])
+    if error.code == 1022 {
+      fireEvent("streamDropped")
+    } else {
+      fireEvent("error", with: ["message": error.localizedDescription])
+    }
   }
   
   func publisher(_ publisher: OTPublisherKit, streamCreated stream: OTStream) {
@@ -204,6 +212,9 @@ extension TiVonageModule : OTSubscriberKitDelegate {
   }
 
   func subscriber(_ subscriber: OTSubscriberKit, didFailWithError error: OTError) {
-    // TODO: Fire an event here as well?
+    if error.code == 1022 {
+      fireEvent("streamDropped")
+    }
+    // TODO: Fire "error" event here as well?
   }
 }
