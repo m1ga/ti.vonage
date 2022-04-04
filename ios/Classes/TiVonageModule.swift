@@ -19,13 +19,13 @@ class TiVonageModule: TiModule {
 
   var subscriber: OTSubscriber?
 
-  var apiKey: String?
+  var _apiKey: String?
 
-  var sessionId: String?
+  var _sessionId: String?
 
-  var token: String?
+  var _token: String?
   
-  var audioOnly: Bool = false
+  var _audioOnly: Bool = false
 
   func moduleGUID() -> String {
     return "8669e6e4-ff3a-4a19-b85a-ead686c4c18c"
@@ -43,7 +43,7 @@ class TiVonageModule: TiModule {
 
   @objc(connect:)
   func connect(unused: Any?) {
-    guard let apiKey = apiKey, let sessionId = sessionId, let token = token else {
+    guard let apiKey = _apiKey, let sessionId = _sessionId, let token = _token else {
       NSLog("[ERROR] Missing apiKey, sessionId or token property! Please set before calling \"connect()\"")
       return
     }
@@ -71,46 +71,46 @@ class TiVonageModule: TiModule {
 
   @objc(setApiKey:)
   func setApiKey(apiKey: String) {
-    self.apiKey = apiKey
+    _apiKey = apiKey
     replaceValue(apiKey, forKey: "apiKey", notification: false)
   }
   
-  @objc(apiKey:)
-  func apiKey(unused: Any?) -> String? {
-    return apiKey
+  @objc(apiKey)
+  func apiKey() -> String? {
+    return _apiKey
   }
   
   @objc(setSessionId:)
   func setSessionId(sessionId: String) {
-    self.sessionId = sessionId
+    _sessionId = sessionId
     replaceValue(sessionId, forKey: "sessionId", notification: false)
   }
   
-  @objc(sessionId:)
-  func sessionId(unused: Any?) -> String? {
-    return sessionId
+  @objc(sessionId)
+  func sessionId() -> String? {
+    return _sessionId
   }
   
   @objc(setToken:)
   func setToken(token: String) {
-    self.token = token
+    _token = token
     replaceValue(token, forKey: "token", notification: false)
   }
   
-  @objc(token:)
-  func token(unused: Any?) -> String? {
-    return token
+  @objc(token)
+  func token() -> String? {
+    return _token
   }
   
   @objc(setAudioOnly:)
   func setAudioOnly(audioOnly: Bool) {
-    self.audioOnly = audioOnly
+    _audioOnly = audioOnly
     replaceValue(audioOnly, forKey: "audioOnly", notification: false)
   }
 
-  @objc(audioOnly:)
-  func audioOnly(unused: Any?) -> Bool {
-    return audioOnly
+  @objc(audioOnly)
+  func audioOnly() -> Any {
+    return _audioOnly
   }
 }
 
@@ -129,7 +129,7 @@ extension TiVonageModule : OTSessionDelegate {
   func sessionDidConnect(_ session: OTSession) {
     let settings = OTPublisherSettings()
     settings.name = UIDevice.current.name
-    settings.videoTrack = !audioOnly;
+    settings.videoTrack = !_audioOnly;
 
     guard let publisher = OTPublisher(delegate: self, settings: settings) else {
         return
@@ -146,10 +146,9 @@ extension TiVonageModule : OTSessionDelegate {
     guard let publisherView = publisher.view else {
         return
     }
-    let screenBounds = UIScreen.main.bounds
     publisherView.frame = CGRect(x: 0, y: 0, width: 512, height: 512)
 
-    let viewProxy = TiVonageVideoProxy()._init(withPageContext: pageContext,
+    let viewProxy = TiVonageVideoProxy()._init(withPageContext: executionContext,
                                                videoView: publisherView)
     
     let event: [String: Any] = [

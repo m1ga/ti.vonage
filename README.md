@@ -66,8 +66,9 @@ Listen to the `streamReceived` event. It will return a `view` with the videos. Y
 import TiVonage from 'ti.vonage';
 
 const API_KEY = ''; // Get from https://tokbox.com/developer/
-const SESSION_ID = '; // Get from https://tokbox.com/developer/tools/playground/
+const SESSION_ID = ''; // Get from https://tokbox.com/developer/tools/playground/
 const TOKEN = ''; // Get from https://tokbox.com/developer/tools/playground/
+const AUDIO_ONLY = false;
 
 function onOpen() {
   // iOS requires some privacy permissions first
@@ -117,6 +118,7 @@ function onClickConnect() {
   TiVonage.apiKey = API_KEY;
   TiVonage.sessionId = SESSION_ID;
   TiVonage.token = TOKEN;
+  TiVonage.audioOnly = AUDIO_ONLY;
 
   TiVonage.connect();
 }
