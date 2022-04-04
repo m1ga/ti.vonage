@@ -34,7 +34,7 @@ repositories {
 * apiKey
 * sessionId
 * token
-* audioOnly (creation only, Android only for now)
+* audioOnly (creation only)
 
 ### Methods
 * connect

@@ -101,6 +101,8 @@ extension TiVonageModule : OTSessionDelegate {
   func sessionDidConnect(_ session: OTSession) {
     let settings = OTPublisherSettings()
     settings.name = UIDevice.current.name
+    settings.videoTrack = !audioOnly;
+
     guard let publisher = OTPublisher(delegate: self, settings: settings) else {
         return
     }
@@ -117,10 +119,7 @@ extension TiVonageModule : OTSessionDelegate {
         return
     }
     let screenBounds = UIScreen.main.bounds
-    publisherView.frame = CGRect(x: screenBounds.width - 150 - 20,
-                                 y: screenBounds.height - 150 - 20,
-                                 width: 150,
-                                 height: 150)
+    publisherView.frame = CGRect(x: 0, y: 0, width: 512, height: 512)
 
     let viewProxy = TiVonageVideoProxy()._init(withPageContext: pageContext,
                                                videoView: publisherView)
