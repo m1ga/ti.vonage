@@ -72,21 +72,45 @@ class TiVonageModule: TiModule {
   @objc(setApiKey:)
   func setApiKey(apiKey: String) {
     self.apiKey = apiKey
+    replaceValue(apiKey, forKey: "apiKey", notification: false)
+  }
+  
+  @objc(apiKey:)
+  func apiKey(unused: Any?) -> String? {
+    return apiKey
   }
   
   @objc(setSessionId:)
   func setSessionId(sessionId: String) {
     self.sessionId = sessionId
+    replaceValue(sessionId, forKey: "sessionId", notification: false)
+  }
+  
+  @objc(sessionId:)
+  func sessionId(unused: Any?) -> String? {
+    return sessionId
   }
   
   @objc(setToken:)
   func setToken(token: String) {
     self.token = token
+    replaceValue(token, forKey: "token", notification: false)
+  }
+  
+  @objc(token:)
+  func token(unused: Any?) -> String? {
+    return token
   }
   
   @objc(setAudioOnly:)
   func setAudioOnly(audioOnly: Bool) {
     self.audioOnly = audioOnly
+    replaceValue(audioOnly, forKey: "audioOnly", notification: false)
+  }
+
+  @objc(audioOnly:)
+  func audioOnly(unused: Any?) -> Bool {
+    return audioOnly
   }
 }
 
