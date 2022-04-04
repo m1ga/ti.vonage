@@ -70,11 +70,6 @@ const SESSION_ID = '; // Get from https://tokbox.com/developer/tools/playground/
 const TOKEN = ''; // Get from https://tokbox.com/developer/tools/playground/
 
 function onOpen() {
-  if (OS_ANDROID) {
-    TiVonage.initialize();
-    return;
-  }
-
   // iOS requires some privacy permissions first
   Ti.Media.requestCameraPermissions(event => {
     if (!event.success) {
@@ -85,7 +80,7 @@ function onOpen() {
       if (!event.success) {
         alert('No access to microphone!');
       }
-  
+
       TiVonage.initialize();
     });
   });
