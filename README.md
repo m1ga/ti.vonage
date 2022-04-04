@@ -34,7 +34,7 @@ repositories {
 * apiKey
 * sessionId
 * token
-* audioOnly (creation only, Android only for now)
+* audioOnly (creation only)
 
 ### Methods
 * connect
@@ -44,7 +44,7 @@ repositories {
 * ready
 * disconnected
 * streamReceived: view, userType, streamId, connectionData, connectionId, connectionCreationTime
-* streamDropped (Android only for now)
+* streamDropped
 * sessionError
 * streamCreated
 * streamDestroyed

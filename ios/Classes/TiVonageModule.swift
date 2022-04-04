@@ -72,21 +72,45 @@ class TiVonageModule: TiModule {
   @objc(setApiKey:)
   func setApiKey(apiKey: String) {
     self.apiKey = apiKey
+    replaceValue(apiKey, forKey: "apiKey", notification: false)
+  }
+  
+  @objc(apiKey:)
+  func apiKey(unused: Any?) -> String? {
+    return apiKey
   }
   
   @objc(setSessionId:)
   func setSessionId(sessionId: String) {
     self.sessionId = sessionId
+    replaceValue(sessionId, forKey: "sessionId", notification: false)
+  }
+  
+  @objc(sessionId:)
+  func sessionId(unused: Any?) -> String? {
+    return sessionId
   }
   
   @objc(setToken:)
   func setToken(token: String) {
     self.token = token
+    replaceValue(token, forKey: "token", notification: false)
+  }
+  
+  @objc(token:)
+  func token(unused: Any?) -> String? {
+    return token
   }
   
   @objc(setAudioOnly:)
   func setAudioOnly(audioOnly: Bool) {
     self.audioOnly = audioOnly
+    replaceValue(audioOnly, forKey: "audioOnly", notification: false)
+  }
+
+  @objc(audioOnly:)
+  func audioOnly(unused: Any?) -> Bool {
+    return audioOnly
   }
 }
 
@@ -95,12 +119,18 @@ class TiVonageModule: TiModule {
 extension TiVonageModule : OTSessionDelegate {
 
   func session(_ session: OTSession, didFailWithError error: OTError) {
-    fireEvent("sessionError")
+    if error.code == 1022 {
+      fireEvent("streamDropped")
+    } else {
+      fireEvent("sessionError")
+    }
   }
   
   func sessionDidConnect(_ session: OTSession) {
     let settings = OTPublisherSettings()
     settings.name = UIDevice.current.name
+    settings.videoTrack = !audioOnly;
+
     guard let publisher = OTPublisher(delegate: self, settings: settings) else {
         return
     }
@@ -117,10 +147,7 @@ extension TiVonageModule : OTSessionDelegate {
         return
     }
     let screenBounds = UIScreen.main.bounds
-    publisherView.frame = CGRect(x: screenBounds.width - 150 - 20,
-                                 y: screenBounds.height - 150 - 20,
-                                 width: 150,
-                                 height: 150)
+    publisherView.frame = CGRect(x: 0, y: 0, width: 512, height: 512)
 
     let viewProxy = TiVonageVideoProxy()._init(withPageContext: pageContext,
                                                videoView: publisherView)
@@ -184,7 +211,11 @@ extension TiVonageModule : OTSessionDelegate {
 extension TiVonageModule : OTPublisherDelegate {
 
   func publisher(_ publisher: OTPublisherKit, didFailWithError error: OTError) {
-    fireEvent("error", with: ["message": error.localizedDescription])
+    if error.code == 1022 {
+      fireEvent("streamDropped")
+    } else {
+      fireEvent("error", with: ["message": error.localizedDescription])
+    }
   }
   
   func publisher(_ publisher: OTPublisherKit, streamCreated stream: OTStream) {
@@ -205,6 +236,9 @@ extension TiVonageModule : OTSubscriberKitDelegate {
   }
 
   func subscriber(_ subscriber: OTSubscriberKit, didFailWithError error: OTError) {
-    // TODO: Fire an event here as well?
+    if error.code == 1022 {
+      fireEvent("streamDropped")
+    }
+    // TODO: Fire "error" event here as well?
   }
 }
