@@ -144,8 +144,13 @@ extension TiVonageModule : OTSessionDelegate {
         print(error!)
         return
     }
+    
+    var event: [String: Any] = [
+      "userType": "published"
+    ]
 
     guard let publisherView = publisher.view else {
+        fireEvent("streamReceived", with: event)
         return
     }
     publisherView.frame = CGRect(x: 0, y: 0, width: 512, height: 512)
@@ -153,10 +158,7 @@ extension TiVonageModule : OTSessionDelegate {
     let viewProxy = TiVonageVideoProxy()._init(withPageContext: executionContext,
                                                videoView: publisherView)
     
-    let event: [String: Any] = [
-      "view": viewProxy!,
-      "userType": "published"
-    ]
+    event["view"] = viewProxy!
 
     fireEvent("streamReceived", with: event)
   }
@@ -182,16 +184,7 @@ extension TiVonageModule : OTSessionDelegate {
         return
     }
 
-    guard let subscriberView = subscriber.view else {
-        return
-    }
-    subscriberView.frame = UIScreen.main.bounds
-
-    let viewProxy = TiVonageVideoProxy()._init(withPageContext: pageContext,
-                                               videoView: subscriberView)
-    
-    let event: [String: Any] = [
-      "view": viewProxy!,
+    var event: [String: Any] = [
       "userType": "subscriber",
       "streamId": stream.streamId,
       "connectionData": stream.connection.data ?? "",
@@ -199,6 +192,16 @@ extension TiVonageModule : OTSessionDelegate {
       "connectionCreationTime": stream.connection.creationTime
     ]
   
+    guard let subscriberView = subscriber.view else {
+        fireEvent("streamReceived", with: event)
+        return
+    }
+    subscriberView.frame = UIScreen.main.bounds
+
+    let viewProxy = TiVonageVideoProxy()._init(withPageContext: pageContext,
+                                               videoView: subscriberView)
+    
+    event["view"] = viewProxy
     fireEvent("streamReceived", with: event)
   }
   
