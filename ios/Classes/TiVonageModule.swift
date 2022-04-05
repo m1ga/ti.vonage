@@ -103,9 +103,11 @@ class TiVonageModule: TiModule {
   }
   
   @objc(setAudioOnly:)
-  func setAudioOnly(audioOnly: Bool) {
-    _audioOnly = audioOnly
-    replaceValue(audioOnly, forKey: "audioOnly", notification: false)
+  func setAudioOnly(audioOnly: Any) {
+    if let audioOnly = audioOnly as? Bool {
+      _audioOnly = audioOnly
+      replaceValue(audioOnly, forKey: "audioOnly", notification: false)
+    }
   }
 
   @objc(audioOnly)
@@ -201,7 +203,7 @@ extension TiVonageModule : OTSessionDelegate {
   }
   
   func session(_ session: OTSession, streamDestroyed stream: OTStream) {
-    // MARK: Also fire the "streamDestroyed" event here?
+    fireEvent("streamDropped", with: ["type": "subscriber", "streamId": stream.streamId ])
   }
 }
 
@@ -218,11 +220,11 @@ extension TiVonageModule : OTPublisherDelegate {
   }
   
   func publisher(_ publisher: OTPublisherKit, streamCreated stream: OTStream) {
-    fireEvent("streamCreated")
+    fireEvent("streamCreated", with: ["streamId": stream.streamId ])
   }
   
   func publisher(_ publisher: OTPublisherKit, streamDestroyed stream: OTStream) {
-    fireEvent("streamDestroyed")
+    fireEvent("streamDestroyed", with: ["type": "publisher", "streamId": stream.streamId ])
   }
 }
 
