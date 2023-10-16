@@ -143,5 +143,5 @@ Apache 2.0
 
 ## Author
 
-* Android: Michael Gangolf ([@m1ga](https://github.com/m1ga))
-* iOS: Michael Gangolf ([@m1ga](https://github.com/m1ga))
+* Android: Michael Gangolf ([@hansemannnn](https://github.com/hansemannnn))
+* iOS: Hans Knöchel ([@m1ga](https://github.com/m1ga))
