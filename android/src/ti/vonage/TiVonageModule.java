@@ -1,11 +1,9 @@
 package ti.vonage;
 
-import android.Manifest;
 import android.app.Activity;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.opentok.android.OpentokError;
@@ -42,7 +40,7 @@ public class TiVonageModule extends KrollModule implements Session.SessionListen
     private Publisher mPublisher;
     private Subscriber mSubscriber;
     private boolean audioOnly = false;
-    private String permissionsText = "This app needs access to your camera and mic to make video calls";
+    private final String permissionsText = "This app needs access to your camera and mic to make video calls";
 
     public TiVonageModule() {
         super();

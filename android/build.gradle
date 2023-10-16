@@ -1,9 +1,7 @@
-
 repositories {
-	google()
 	mavenCentral()
 }
 
 dependencies {
-	implementation 'com.opentok.android:opentok-android-sdk:2.21.5'
+	implementation 'com.opentok.android:opentok-android-sdk:2.26.1'
 }
