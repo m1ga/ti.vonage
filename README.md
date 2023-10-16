@@ -14,11 +14,10 @@
 * For Android: Add the following like to your [app]/platform/android/build.gradle
 ```gradle
 repositories {
-  google()
-  jcenter()
   mavenCentral()
 }
 ```
+and `<uses-sdk android:minSdkVersion="23"/>` in you `tiapp.xml`.
 
 * For iOS: Add the following privacy keys to the <plist> section of your tiapp.xml:
 ```xml
