@@ -12,16 +12,19 @@ import OpenTok
 @objc(TiVonageVideo)
 public class TiVonageVideo : TiUIView {
   
-  public var videoView: UIView?
+  public var videoView: UIView? = nil {
+    didSet {
+      if let videoView = videoView {
+        self.frame = videoView.bounds
+        addSubview(videoView)
+      }
+    }
+  }
 
   public override func frameSizeChanged(_ frame: CGRect, bounds: CGRect) {
     super.frameSizeChanged(frame, bounds: bounds)
     
     if let videoView = videoView {
-      if self.subviews.isEmpty {
-        self.addSubview(videoView)
-      }
-
       TiUtils.setView(videoView, positionRect: bounds)
     }
   }

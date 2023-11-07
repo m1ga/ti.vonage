@@ -15,7 +15,7 @@ public class TiVonageVideoProxy : TiViewProxy {
   public func _init(withPageContext context: TiEvaluator!, videoView: UIView) -> Self! {
     super._init(withPageContext: context)
     
-    self.publisherView.videoView = publisherView
+    self.publisherView.videoView = videoView
     
     return self
   }
