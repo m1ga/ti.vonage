@@ -19,13 +19,13 @@ class TiVonageModule: TiModule {
 
   var subscriber: OTSubscriber?
 
-  var apiKey: String?
+  var _apiKey: String?
 
-  var sessionId: String?
+  var _sessionId: String?
 
-  var token: String?
+  var _token: String?
   
-  var audioOnly: Bool = false
+  var _audioOnly: Bool = false
 
   func moduleGUID() -> String {
     return "8669e6e4-ff3a-4a19-b85a-ead686c4c18c"
@@ -43,7 +43,7 @@ class TiVonageModule: TiModule {
 
   @objc(connect:)
   func connect(unused: Any?) {
-    guard let apiKey = apiKey, let sessionId = sessionId, let token = token else {
+    guard let apiKey = _apiKey, let sessionId = _sessionId, let token = _token else {
       NSLog("[ERROR] Missing apiKey, sessionId or token property! Please set before calling \"connect()\"")
       return
     }
@@ -71,46 +71,48 @@ class TiVonageModule: TiModule {
 
   @objc(setApiKey:)
   func setApiKey(apiKey: String) {
-    self.apiKey = apiKey
+    _apiKey = apiKey
     replaceValue(apiKey, forKey: "apiKey", notification: false)
   }
   
-  @objc(apiKey:)
-  func apiKey(unused: Any?) -> String? {
-    return apiKey
+  @objc(apiKey)
+  func apiKey() -> String? {
+    return _apiKey
   }
   
   @objc(setSessionId:)
   func setSessionId(sessionId: String) {
-    self.sessionId = sessionId
+    _sessionId = sessionId
     replaceValue(sessionId, forKey: "sessionId", notification: false)
   }
   
-  @objc(sessionId:)
-  func sessionId(unused: Any?) -> String? {
-    return sessionId
+  @objc(sessionId)
+  func sessionId() -> String? {
+    return _sessionId
   }
   
   @objc(setToken:)
   func setToken(token: String) {
-    self.token = token
+    _token = token
     replaceValue(token, forKey: "token", notification: false)
   }
   
-  @objc(token:)
-  func token(unused: Any?) -> String? {
-    return token
+  @objc(token)
+  func token() -> String? {
+    return _token
   }
   
   @objc(setAudioOnly:)
-  func setAudioOnly(audioOnly: Bool) {
-    self.audioOnly = audioOnly
-    replaceValue(audioOnly, forKey: "audioOnly", notification: false)
+  func setAudioOnly(audioOnly: Any) {
+    if let audioOnly = audioOnly as? Bool {
+      _audioOnly = audioOnly
+      replaceValue(audioOnly, forKey: "audioOnly", notification: false)
+    }
   }
 
-  @objc(audioOnly:)
-  func audioOnly(unused: Any?) -> Bool {
-    return audioOnly
+  @objc(audioOnly)
+  func audioOnly() -> Any {
+    return _audioOnly
   }
 }
 
@@ -129,7 +131,7 @@ extension TiVonageModule : OTSessionDelegate {
   func sessionDidConnect(_ session: OTSession) {
     let settings = OTPublisherSettings()
     settings.name = UIDevice.current.name
-    settings.videoTrack = !audioOnly;
+    settings.videoTrack = !_audioOnly;
 
     guard let publisher = OTPublisher(delegate: self, settings: settings) else {
         return
@@ -142,20 +144,21 @@ extension TiVonageModule : OTSessionDelegate {
         print(error!)
         return
     }
-
-    guard let publisherView = publisher.view else {
-        return
-    }
-    let screenBounds = UIScreen.main.bounds
-    publisherView.frame = CGRect(x: 0, y: 0, width: 512, height: 512)
-
-    let viewProxy = TiVonageVideoProxy()._init(withPageContext: pageContext,
-                                               videoView: publisherView)
     
-    let event: [String: Any] = [
-      "view": viewProxy!,
+    var event: [String: Any] = [
       "userType": "published"
     ]
+
+    guard let publisherView = publisher.view else {
+        fireEvent("streamReceived", with: event)
+        return
+    }
+    publisherView.frame = CGRect(x: 0, y: 0, width: 512, height: 512)
+
+    let viewProxy = TiVonageVideoProxy()._init(withPageContext: executionContext,
+                                               videoView: publisherView)
+    
+    event["view"] = viewProxy!
 
     fireEvent("streamReceived", with: event)
   }
@@ -181,16 +184,7 @@ extension TiVonageModule : OTSessionDelegate {
         return
     }
 
-    guard let subscriberView = subscriber.view else {
-        return
-    }
-    subscriberView.frame = UIScreen.main.bounds
-
-    let viewProxy = TiVonageVideoProxy()._init(withPageContext: pageContext,
-                                               videoView: subscriberView)
-    
-    let event: [String: Any] = [
-      "view": viewProxy!,
+    var event: [String: Any] = [
       "userType": "subscriber",
       "streamId": stream.streamId,
       "connectionData": stream.connection.data ?? "",
@@ -198,11 +192,21 @@ extension TiVonageModule : OTSessionDelegate {
       "connectionCreationTime": stream.connection.creationTime
     ]
   
+    guard let subscriberView = subscriber.view else {
+        fireEvent("streamReceived", with: event)
+        return
+    }
+    subscriberView.frame = UIScreen.main.bounds
+
+    let viewProxy = TiVonageVideoProxy()._init(withPageContext: pageContext,
+                                               videoView: subscriberView)
+    
+    event["view"] = viewProxy
     fireEvent("streamReceived", with: event)
   }
   
   func session(_ session: OTSession, streamDestroyed stream: OTStream) {
-    // MARK: Also fire the "streamDestroyed" event here?
+    fireEvent("streamDropped", with: ["type": "subscriber", "streamId": stream.streamId ])
   }
 }
 
@@ -219,11 +223,11 @@ extension TiVonageModule : OTPublisherDelegate {
   }
   
   func publisher(_ publisher: OTPublisherKit, streamCreated stream: OTStream) {
-    fireEvent("streamCreated")
+    fireEvent("streamCreated", with: ["streamId": stream.streamId ])
   }
   
   func publisher(_ publisher: OTPublisherKit, streamDestroyed stream: OTStream) {
-    fireEvent("streamDestroyed")
+    fireEvent("streamDestroyed", with: ["type": "publisher", "streamId": stream.streamId ])
   }
 }
 
