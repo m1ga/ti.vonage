@@ -1,4 +1,4 @@
-# Vonage module for Appcelerator Titanium
+# Vonage module for Titanium SDK
 
 <img src="images/vonage.jpg"/>
 
@@ -9,7 +9,7 @@
 
 ## Requirements
 
-* Titanium SDK 9+ (Android), 9.2.0+ (iOS)
+* Titanium SDK 12+ (Android), 9.2.0+ (iOS)
 * Vonage <small>(formerly OpenTok)</small> account
 * For Android: Add the following like to your [app]/platform/android/build.gradle
 ```gradle
@@ -17,7 +17,7 @@ repositories {
   mavenCentral()
 }
 ```
-and `<uses-sdk android:minSdkVersion="23"/>` in you `tiapp.xml`.
+and `<uses-sdk android:minSdkVersion="24"/>` in you `tiapp.xml`.
 
 * For iOS: Add the following privacy keys to the <plist> section of your tiapp.xml:
 ```xml
